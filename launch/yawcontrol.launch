@@ -14,7 +14,7 @@
 </node>
 
 <!-- Now convert the yaw message from quant2rpy (from gazebo) for controller -->
-<node pkg="ros_utils" type="msg2msg.py" name="msg2msg" output="screen">
+<node pkg="ros_utils" type="msg2msg.py" name="msg2msg_in" output="screen">
       <param name="input_topic" value="kingfisher_rpy" />      
       <param name="input_msg_package" value="geometry_msgs" />      
       <param name="input_msg_type" value="Vector3" />      
@@ -32,19 +32,43 @@
 <node name="yaw_pid" pkg="pid" type="controller" >
   <param name="topic_from_plant" value="kingfisher_yaw" />
   <param name="topic_from_controller" value="kingfisher_torque" />
-  <param name="Kp" value="5.0" />
+  <param name="Kp" value="1.0" />
   <param name="Ki" value="0.0" />
-  <param name="Kd" value="0.1" />
-  <param name="upper_limit" value="10" />
-  <param name="lower_limit" value="-10" />
-  <param name="windup_limit" value="10" />
+  <param name="Kd" value="0.0" />
+  <param name="upper_limit" value="1.0" />
+  <param name="lower_limit" value="-1.0" />
+  <param name="windup_limit" value="1.0" />
   <param name="diagnostic_period" value="0.25" />
   <param name="max_loop_frequency" value="1000.0" />
   <param name="min_loop_frequency" value="1.0" />
+  <param name="angle_error" value="true" />
+  <param name="angle_wrap" value="6.28318" />
 </node>
+
+<!-- Now convert the PID controller output to Twist -->
+<node pkg="ros_utils" type="msg2msg.py" name="msg2msg_out" output="screen">
+      <param name="input_topic" value="kingfisher_torque" />      
+      <param name="input_msg_package" value="std_msgs" />      
+      <param name="input_msg_type" value="Float64" />      
+      <param name="input_msg_fields" value="data" />      
+      <param name="output_topic" value="kingfisher_twist" />      
+      <param name="output_msg_package" value="geometry_msgs" />      
+      <param name="output_msg_type" value="Twist" />      
+      <param name="output_msg_fields" value="angular.z" />      
+</node>
+
+<!-- Finally convert Twist to Drive -->
+<node pkg="kingfisher_utils" type="twist2drive.py" name="twist2drive" output="screen">
+      <param name="input_topic" value="kingfisher_twist" />      
+      <param name="output_topic" value="cmd_drive" />      
+      <param name="linear_scaling" value="1.0" type="double" />      
+      <param name="angular_scaling" value="1.0" type="double" />      
+</node>
+
 
 <!-- diagnostics -->
 <node pkg="rqt_topic" name="rqt_topic" type="rqt_topic"/>
+<node pkg="rqt_graph" name="rqt_graph" type="rqt_graph"/>
 <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure"/>
 <node pkg="diagnostic_aggregator" type="aggregator_node" name="diagnostic_aggregator" >
   <rosparam command="delete" param="/diagnostic_aggregator" />
