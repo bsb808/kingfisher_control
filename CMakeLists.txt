@@ -4,7 +4,7 @@ project(kingfisher_control)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS dynamic_reconfigure rospy)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -80,6 +80,9 @@ find_package(catkin REQUIRED)
 ##   * uncomment the "generate_dynamic_reconfigure_options" section below
 ##     and list every .cfg file to be processed
 
+generate_dynamic_reconfigure_options(
+  cfg/YawDynamic.cfg
+)
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
 # generate_dynamic_reconfigure_options(
 #   cfg/DynReconf1.cfg
