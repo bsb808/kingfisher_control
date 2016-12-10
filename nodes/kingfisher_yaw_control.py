@@ -13,6 +13,8 @@ import tf
 from dynamic_reconfigure.server import Server
 from kingfisher_control.cfg import YawDynamicConfig
 
+from kingfisher_control.msg import PidDiagnose
+
 from geometry_msgs.msg import Vector3
 from std_msgs.msg import Float64
 from kingfisher_msgs.msg import Drive
@@ -32,11 +34,13 @@ class Node():
         self.pid.set_inputisangle(True,pi)
         self.pid.set_derivfeedback(True)  # D term in feedback look
         fc = 50;  # cutoff freq in hz
-        wc = fc/(2.0*pi)  # cutoff freq. in rad/s
+        wc = fc*(2.0*pi)  # cutoff freq. in rad/s
         self.pid.set_derivfilter(1,wc)
         self.drivemsg = None
         self.publisher = None
         self.lasttime = None
+        # For diagnosing/tuning PID
+        self.pubdebug = None
         
     def set_setpoint(self,msg):
         self.pid.set_setpoint(msg.data)
@@ -61,6 +65,19 @@ class Node():
         self.drivemsg.left=-1*torque
         self.drivemsg.right=torque
         self.publisher.publish(self.drivemsg)
+
+        if not (self.pubdebug is None):
+            self.debugmsg.PID = out[0]
+            self.debugmsg.P = out[1]
+            self.debugmsg.I = out[2]
+            self.debugmsg.D = out[3]
+            self.debugmsg.Error = out[4]
+            self.debugmsg.Setpoint = out[5]
+            self.debugmsg.Derivative= out[6]
+            self.debugmsg.Integral = out[7]
+            self.pubdebug.publish(self.debugmsg)
+
+
 
     def dynamic_callback(self,config,level):
         #rospy.loginfo("""Reconfigure Request: {int_param}, {double_param},\ 
@@ -108,7 +125,8 @@ if __name__ == '__main__':
     rospy.loginfo("Publishing to %s"%
                   (out_topic))
     node.publisher = rospy.Publisher(out_topic,Drive,queue_size=10)
-
+    node.pubdebug = rospy.Publisher("pid_debug",PidDiagnose,queue_size=10)
+    node.debugmsg = PidDiagnose()
     # Setup subscribers
     rospy.Subscriber(in_topic,in_type,node.callback)
     rospy.Subscriber("set_setpoint",Float64,node.set_setpoint)

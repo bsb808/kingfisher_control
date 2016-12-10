@@ -4,7 +4,11 @@ project(kingfisher_control)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS dynamic_reconfigure rospy)
+find_package(catkin REQUIRED COMPONENTS 
+  rospy
+  dynamic_reconfigure
+  message_generation
+  std_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -40,9 +44,10 @@ find_package(catkin REQUIRED COMPONENTS dynamic_reconfigure rospy)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
+add_message_files(
+   FILES
+   PidDiagnose.msg
+)
 #   Message2.msg
 # )
 
@@ -61,10 +66,10 @@ find_package(catkin REQUIRED COMPONENTS dynamic_reconfigure rospy)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs  # Or other packages containing msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -101,7 +106,7 @@ generate_dynamic_reconfigure_options(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES kingfisher_control
-#  CATKIN_DEPENDS other_catkin_pkg
+CATKIN_DEPENDS message_runtime std_msgs
 #  DEPENDS system_lib
 )
 
