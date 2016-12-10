@@ -6,18 +6,7 @@
 <!-- This starts gazebo and spawns the kingfisher -->
 <include file="$(find kingfisher_gazebo)/launch/base_gazebo.launch" />
 
-<!-- Quaternion to Roll-pitch-yaw - take model states from gazebo -->
-<node pkg="ros_utils" type="quat2rpy.py" name="quat2rpy">
-      <param name="output_topic" value="kingfisher_rpy" />      
-      <param name="input_topic" value="/gazebo/model_states" />      
-      <param name="modelstates_index" value="1" type="int" />
-</node>
 
-
-<node pkg="diagnostic_aggregator" type="aggregator_node" name="diagnostic_aggregator" >
-      <rosparam command="delete" param="/diagnostic_aggregator" />
-      <rosparam command="load" file="$(find kingfisher_control)/config/pid_yaw1.yaml" />
-</node>
 
 <!-- diagnostics -->
 <node pkg="rqt_robot_monitor" name="rqt_robot_monitor" type="rqt_robot_monitor"/>
