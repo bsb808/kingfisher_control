@@ -6,7 +6,7 @@
 
     <param name="frequency" value="10"/>
     <param name="sensor_timeout" value="2.0"/>
-    <param name="two_d_mode" value="false"/>
+    <param name="two_d_mode" value="true"/>
     <param name="map_frame" value="map"/>
     <param name="odom_frame" value="odom"/>
     <param name="base_link_frame" value="base_link"/>
@@ -18,16 +18,16 @@
                                    false,  false,  false,
                                    true,  true,  true,
                                    true,  true,  true]</rosparam>
-    <param name="imu0_differential" value="true"/>
+    <param name="imu0_differential" value="false"/>
     <param name="imu0_remove_gravitational_acceleration" value="true"/>
 
-    <param name="gps0" value="/odometry/gps"/>
-    <rosparam param="gps0_config">[true,  true,  true,
+    <param name="odom0" value="/odometry/gps"/>
+    <rosparam param="odom0_config">[true,  true,  true,
                                    false, false, false,
                                    false, false, false,
                                    false, false, false,
                                    false, false, false]</rosparam>
-    <param name="gps0_differential" value="false"/>
+    <param name="odom0_differential" value="false"/>
   </node>
  
   <node pkg="robot_localization" type="navsat_transform_node"
