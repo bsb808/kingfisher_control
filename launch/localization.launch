@@ -34,6 +34,9 @@
       name="navsat_transform_node" respawn="true" output="screen">
     <param name="magnetic_declination_radians" value="0"/>
     <param name="broadcast_utm_transform" value="true"/>
+    <param name="wait_for_datum" value="true"/>
+    <rosparam param="datum">[36.6, -121.9, 0.0]</rosparam>
+
     <!-- Inputs -->
     <remap from="imu/data" to="imu/data" />
     <remap from="gps/fix" to="gps/fix" />
