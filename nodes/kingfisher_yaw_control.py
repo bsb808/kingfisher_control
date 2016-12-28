@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 '''
-This utility node is meant to convert from a message (user-defined) 
-to a Float32 message for use with the Pid package with ROS.
+Example of using the pypid module for heading control of a USV.
+
 '''
 # Python
 import sys

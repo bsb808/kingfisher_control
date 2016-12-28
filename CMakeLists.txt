@@ -87,6 +87,7 @@ add_message_files(
 
 generate_dynamic_reconfigure_options(
   cfg/YawDynamic.cfg
+  cfg/TwistDynamic.cfg
 )
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
 # generate_dynamic_reconfigure_options(
