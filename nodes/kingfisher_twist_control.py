@@ -33,7 +33,7 @@ class Node():
         self.ypid.set_setpoint(0.0)
         #self.pid.set_inputisangle(True,pi)
         self.ypid.set_derivfeedback(True)  # D term in feedback look
-        fc = 50;  # cutoff freq in hz
+        fc = 20;  # cutoff freq in hz
         wc = fc*(2.0*pi)  # cutoff freq. in rad/s
         self.ypid.set_derivfilter(1,wc)
         self.ypid.set_maxIout(1.0)
@@ -43,7 +43,7 @@ class Node():
         self.vpid.set_maxIout(1.0)
         #self.pid.set_inputisangle(True,pi)
         self.vpid.set_derivfeedback(True)  # D term in feedback look
-        fc = 50;  # cutoff freq in hz
+        fc = 20;  # cutoff freq in hz
         wc = fc*(2.0*pi)  # cutoff freq. in rad/s
         self.vpid.set_derivfilter(1,wc)
         
@@ -88,7 +88,7 @@ class Node():
             thrust = thrust/mag
         '''
 
-        rospy.loginfo('Torque: %.3f, Thrust: %.3f'%(torque,thrust))
+        #rospy.loginfo('Torque: %.3f, Thrust: %.3f'%(torque,thrust))
         self.drivemsg.left=-1*torque + thrust
         self.drivemsg.right=torque + thrust
         self.publisher.publish(self.drivemsg)
@@ -122,11 +122,21 @@ class Node():
         #print config.keys()
         #print config['yawKp']
         self.ypid.Kp = config['yawKp']
-        self.ypid.Ki = config['yawKi']
+        #self.ypid.Ki = config['yawKi']
+        # Use method to zero the integrator
+        Ki = config['yawKi']
+        tol = 1e-6
+        if abs(abs(Ki)-abs(self.ypid.Ki)) > tol:
+            rospy.loginfo("Setting yaw Ki to %.3f"%Ki)
+            self.ypid.set_Ki(Ki)
         self.ypid.Kd = config['yawKd']
 
         self.vpid.Kp = config['velKp']
-        self.vpid.Ki = config['velKi']
+        #self.vpid.Ki = config['velKi']
+        Ki = config['velKi']
+        if abs(abs(Ki)-abs(self.vpid.Ki)) > tol:
+            rospy.loginfo("Setting vel Ki to %.3f"%Ki)
+            self.vpid.set_Ki(Ki)
         self.vpid.Kd = config['velKd']
         return config
         

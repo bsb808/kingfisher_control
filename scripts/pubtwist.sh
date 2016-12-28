@@ -16,9 +16,9 @@ else
     dyaw=$2
 fi
 
-echo "Vel = ${dvel}, Yaw-rate = ${dyaw}"
+#echo "Vel = ${dvel}, Yaw-rate = ${dyaw}"
 
-cmd="rostopic pub -1 /cmd_vel geometry_msgs/Twist  '{linear:  {x: ${dvel}, y: 0.0, z: 0.0}, angular: {x: 0.0,y: 0.0,z: ${dyaw}}}'"
+cmd="rostopic pub -1 /cli_cmd_vel geometry_msgs/Twist  '{linear:  {x: ${dvel}, y: 0.0, z: 0.0}, angular: {x: 0.0,y: 0.0,z: ${dyaw}}}'"
 
 echo ${cmd}
 
