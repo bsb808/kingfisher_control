@@ -11,7 +11,7 @@
    <arg name="p3d" default="true" />
 </include>
 
-<node pkg="kingfisher_gazebo" type="p3d2nav.py" name="p3d2nav">
+<node pkg="kingfisher_gazebo" type="p3d2nav.py" name="p3d2nav" output="screen">
   <param name="gazebo_origin_lat" value="36.6137" type="double" />
   <param name="gazebo_origin_long" value="-121.912" type="double" />
 </node>
