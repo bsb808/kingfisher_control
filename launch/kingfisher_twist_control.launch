@@ -12,8 +12,8 @@
 </include>
 
 <node pkg="kingfisher_gazebo" type="p3d2nav.py" name="p3d2nav">
-  <param name="gazebo_origin_lat" value="36.6" type="double" />
-  <param name="gazebo_origin_long" value="-121.9" type="double" />
+  <param name="gazebo_origin_lat" value="36.6137" type="double" />
+  <param name="gazebo_origin_long" value="-121.912" type="double" />
 </node>
 
 <node pkg="kingfisher_control" type="kingfisher_twist_control.py" name="kingfisher_twist_control" output="screen">
@@ -24,6 +24,8 @@
   <param name="velKp" value="0.7" type="double"/>
   <param name="velKi" value="0.3" type="double"/>
   <param name="velKd" value="0.0" type="double"/>
+
+  <remap from="odometry/nav" to="nav_odom" />
 
 </node>
 	
