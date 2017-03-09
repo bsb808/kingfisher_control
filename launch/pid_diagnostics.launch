@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+
+<!-- Joystick -->
+<node pkg="joy" type="joy_node" name="joy">
+  <param name="dev" value="/dev/input/js0"/>
+  <!--<param name="autorepeat_rate" type="double" value="10.0" />  -->
+</node>
+
+<rosparam file="$(find kingfisher_control)/config/kingfisher_joy.yaml"
+	  command="load"/>	
+<node pkg="joy_teleop" type="joy_teleop.py" name="joy_teleop">
+  <remap from="cmd_vel" to="joy_cmd_vel" />
+</node>
+
+
+<!-- diagnostics -->
+<node pkg="rqt_plot" type="rqt_plot" name="pid_errors"
+      args="/yaw_pid_debug/Error /vel_pid_debug/Error"/>
+<!--<node pkg="rqt_robot_monitor" name="rqt_robot_monitor" type="rqt_robot_monitor"/>-->
+<node pkg="rqt_topic" name="rqt_topic" type="rqt_topic"/>
+<node pkg="rqt_graph" name="rqt_graph" type="rqt_graph"/>
+<node pkg= "rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure"/>
+<!--
+<node pkg="diagnostic_aggregator" type="aggregator_node" name="diagnostic_aggregator" >
+      <rosparam command="delete" param="/diagnostic_aggregator" />
+      <rosparam command="load" file="$(find kingfisher_control)/config/pid_yaw1.yaml" />
+</node>
+-->
+
+
+
+</launch>
