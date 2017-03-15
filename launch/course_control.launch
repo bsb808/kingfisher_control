@@ -42,6 +42,9 @@
 <!-- diagnostics -->
 <node pkg="rqt_plot" type="rqt_plot" name="pid_errors"
       args="/yaw_pid_debug/Error /vel_pid_debug/Error"/>
+
+<node pkg="rqt_plot" type="rqt_plot" name="pid_setpoint"
+      args="/yaw_pid_debug/Setpoint /vel_pid_debug/Setpoint "/>
 <!--<node pkg="rqt_robot_monitor" name="rqt_robot_monitor" type="rqt_robot_monitor"/>-->
 <node pkg="rqt_topic" name="rqt_topic" type="rqt_topic"/>
 <node pkg="rqt_graph" name="rqt_graph" type="rqt_graph"/>
