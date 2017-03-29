@@ -23,7 +23,7 @@ from kingfisher_msgs.msg import Drive
 from kingfisher_msgs.msg import Course
 from sensor_msgs.msg import Imu
 #from std_srvs.srv import SetBool, SetBoolResponse, SetBoolRequest
-from std_srvs.srv import Empty
+from std_srvs.srv import Empty, EmptyResponse
 
 # BSB
 import pypid
@@ -86,7 +86,7 @@ class Node():
         if self.engaged:
             self.ypid.I = 0.0
             self.vpid.I = 0.0
-        return
+        return EmptyResponse()
 
     def twist_callback(self,msg):
         self.ypid.set_setpoint(msg.angular.z)
