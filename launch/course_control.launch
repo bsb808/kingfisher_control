@@ -12,6 +12,10 @@
   <param name="velKi" value="0.3" type="double"/>
   <param name="velKd" value="0.0" type="double"/>
 
+  <param name="start_engaged" value="false" type="bool"/>
+  <param name="yaw_cntrl" value="true" type="bool"/>
+  <param name="vel_cntrl" value="true" type="bool"/>
+  
   <remap from="odometry/nav" to="nav_odom" />
 
 </node>

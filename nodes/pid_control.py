@@ -30,9 +30,11 @@ import pypid
 
 
 class Node():
-    def __init__(self,engaged=False):
+    def __init__(self,engaged=False,yaw_cntrl=True,vel_cntrl=True):
         # Setup Yaw Pid
         self.engaged = engaged
+        self.yaw_cntrl = yaw_cntrl
+        self.vel_cntrl = vel_cntrl
         self.ypid = pypid.Pid(0.0, 0.0, 0.0)
         self.ypid.set_setpoint(0.0)
         #self.pid.set_inputisangle(True,pi)
@@ -98,23 +100,29 @@ class Node():
         dt = now-self.lasttime
         self.lasttime = now
         # Yaw Control
-        if self.yaw_type=='yaw_rate':
-            yaw_fdbk = msg.twist.twist.angular.z # measured rate (process var.)
-        elif self.yaw_type=='yaw':
-            euler = tf.transformations.euler_from_quaternion(
-                (msg.pose.pose.orientation.x,
-                 msg.pose.pose.orientation.y,
-                 msg.pose.pose.orientation.z,
-                 msg.pose.pose.orientation.w))
-            yaw_fdbk = euler[2]  # yaw
-        yout = self.ypid.execute(dt,yaw_fdbk)
-        torque = yout[0]
-        #torque = 0.0
+        if self.yaw_cntrl:
+            if self.yaw_type=='yaw_rate':
+                yaw_fdbk = msg.twist.twist.angular.z # measured rate (process var.)
+            elif self.yaw_type=='yaw':
+                euler = tf.transformations.euler_from_quaternion(
+                    (msg.pose.pose.orientation.x,
+                     msg.pose.pose.orientation.y,
+                     msg.pose.pose.orientation.z,
+                     msg.pose.pose.orientation.w))
+                yaw_fdbk = euler[2]  # yaw
+            yout = self.ypid.execute(dt,yaw_fdbk)
+            torque = yout[0]
+        else:
+            torque = 0.0
+
 
         # Velocity control
-        dx = msg.twist.twist.linear.x
-        vout = self.vpid.execute(dt,dx)
-        thrust = vout[0]
+        if self.vel_cntrl:
+            dx = msg.twist.twist.linear.x
+            vout = self.vpid.execute(dt,dx)
+            thrust = vout[0]
+        else:
+            thrust = 0.0
 
         # I believe drive messages are scaled to -1.0 to 1.0
         # Scale so that no one output saturates
@@ -134,7 +142,7 @@ class Node():
         if (self.engaged):
             self.publisher.publish(self.drivemsg)
 
-        if not (self.ypubdebug is None):
+        if (not (self.ypubdebug is None)) and (self.yaw_cntrl):
             self.ydebugmsg.PID = yout[0]
             self.ydebugmsg.P = yout[1]
             self.ydebugmsg.I = yout[2]
@@ -144,7 +152,7 @@ class Node():
             self.ydebugmsg.Derivative= yout[6]
             self.ydebugmsg.Integral = yout[7]
             self.ypubdebug.publish(self.ydebugmsg)
-        if not (self.vpubdebug is None):
+        if (not (self.vpubdebug is None)) and (self.vel_cntrl):
             self.vdebugmsg.PID = vout[0]
             self.vdebugmsg.P = vout[1]
             self.vdebugmsg.I = vout[2]
@@ -197,6 +205,10 @@ if __name__ == '__main__':
 
     engaged = rospy.get_param('~start_engaged',False)
 
+    # Allow for combinations of yaw and vel control
+    yaw_cntrl = rospy.get_param('~yaw_cntrl',True)
+    vel_cntrl = rospy.get_param('~vel_cntrl',True)
+
     yaw_type = rospy.get_param('~yaw_type','yaw')  # 'yaw' or 'yaw_rate'
     rospy.loginfo('Setting control yaw_type to <%s>'%yaw_type)
     # validate
@@ -209,7 +221,7 @@ if __name__ == '__main__':
         
     
     # Initiate node object - creates PID object
-    node=Node(engaged)
+    node=Node(engaged=engaged, yaw_cntrl=yaw_cntrl, vel_cntrl=vel_cntrl)
     
     # Set initial gains from parameters
     node.ypid.Kp = yawKp
