@@ -22,7 +22,8 @@ from nav_msgs.msg import Odometry
 from kingfisher_msgs.msg import Drive
 from kingfisher_msgs.msg import Course
 from sensor_msgs.msg import Imu
-from std_srvs.srv import SetBool, SetBoolResponse, SetBoolRequest
+#from std_srvs.srv import SetBool, SetBoolResponse, SetBoolRequest
+from std_srvs.srv import Empty
 
 # BSB
 import pypid
@@ -60,7 +61,8 @@ class Node():
 
         # Type of yaw control
         self.yaw_type = 'yaw'
-
+        
+    '''
     def set_engaged_callback(self,req):
         result = SetBoolResponse()
         rospy.loginfo('Setting engaged to :')
@@ -72,7 +74,13 @@ class Node():
         result.success = True
         result.message = 'done'
         return result
-        
+    '''
+    def toggle_engaged_callback(self,req):
+        self.engaged = not self.engaged
+        rospy.loginfo('Toggling engaged status - new status is...')
+        rospy.loginfo(self.engaged)
+        return
+
     def twist_callback(self,msg):
         self.ypid.set_setpoint(msg.angular.z)
         self.vpid.set_setpoint(msg.linear.x)
@@ -229,7 +237,8 @@ if __name__ == '__main__':
     node.vdebugmsg = PidDiagnose()
 
     # Setup service
-    s = rospy.Service('set_engaged',SetBool,node.set_engaged_callback)
+    #s = rospy.Service('set_engaged',SetBool,node.set_engaged_callback)
+    s = rospy.Service('toggle_engaged',Empty,node.toggle_engaged_callback)
 
     # Setup subscribers
     s1 = rospy.Subscriber('odometry/nav',Odometry,node.odom_callback)
