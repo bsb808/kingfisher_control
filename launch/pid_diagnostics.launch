@@ -7,12 +7,13 @@
   <!--<param name="autorepeat_rate" type="double" value="10.0" />  -->
 </node>
 
+<!--
 <rosparam file="$(find kingfisher_control)/config/kingfisher_joy.yaml"
 	  command="load"/>	
 <node pkg="joy_teleop" type="joy_teleop.py" name="joy_teleop">
   <remap from="cmd_vel" to="joy_cmd_vel" />
 </node>
-
+-->
 
 <!-- diagnostics -->
 <node pkg="rqt_plot" type="rqt_plot" name="pid_yaw_setpoint"
