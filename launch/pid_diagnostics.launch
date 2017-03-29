@@ -15,11 +15,15 @@
 
 
 <!-- diagnostics -->
-<node pkg="rqt_plot" type="rqt_plot" name="nav_rpy"
-      args="/nav_rpy/x /nav_rpy/y /nav_rpy/z"/>
+<node pkg="rqt_plot" type="rqt_plot" name="pid_yaw_setpoint"
+      args="/yaw_pid_debug/Setpoint"/>
 
-<node pkg="rqt_plot" type="rqt_plot" name="nav_vel"
-      args="/nav_odom/twist/twist/linear/x /nav_odom/twist/twist/linear/y /nav_odom/twist/twist/linear/z "/>
+<node pkg="rqt_plot" type="rqt_plot" name="pid_yaw"
+      args="/yaw_pid_debug/Error /yaw_pid_debug/P /yaw_pid_debug/I /yaw_pid_debug/D"/>
+
+
+<node pkg="rqt_plot" type="rqt_plot" name="pid_vel"
+      args="/vel_pid_debug/Error /vel_pid_debug/P /vel_pid_debug/I /vel_pid_debug/D"/>
 
 <!--
 <node pkg="rqt_plot" type="rqt_plot" name="pid_errors"

@@ -14,7 +14,7 @@
 
   <param name="start_engaged" value="false" type="bool"/>
   <param name="yaw_cntrl" value="true" type="bool"/>
-  <param name="vel_cntrl" value="true" type="bool"/>
+  <param name="vel_cntrl" value="false" type="bool"/>
   
   <remap from="odometry/nav" to="nav_odom" />
 
