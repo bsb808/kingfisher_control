@@ -81,6 +81,11 @@ class Node():
         self.engaged = not self.engaged
         rospy.loginfo('Toggling engaged status - new status is...')
         rospy.loginfo(self.engaged)
+        
+        # If engaging, zero the I terms
+        if self.engaged:
+            self.ypid.I = 0.0
+            self.vpid.I = 0.0
         return
 
     def twist_callback(self,msg):
