@@ -15,8 +15,15 @@
 
 
 <!-- diagnostics -->
+<node pkg="rqt_plot" type="rqt_plot" name="nav_rpy"
+      args="/nav_rpy/x /nav_rpy/y /nav_rpy/z"/>
+
+<node pkg="rqt_plot" type="rqt_plot" name="nav_vel"
+      args="/nav_odom/twist/twist/linear/x /nav_odom/twist/twist/linear/y /nav_odom/twist/twist/linear/z "/>
+
+<!--
 <node pkg="rqt_plot" type="rqt_plot" name="pid_errors"
-      args="/yaw_pid_debug/Error /vel_pid_debug/Error"/>
+      args="/yaw_pid_debug/Error /vel_pid_debug/Error"/>-->
 <!--<node pkg="rqt_robot_monitor" name="rqt_robot_monitor" type="rqt_robot_monitor"/>-->
 <node pkg="rqt_topic" name="rqt_topic" type="rqt_topic"/>
 <node pkg="rqt_graph" name="rqt_graph" type="rqt_graph"/>

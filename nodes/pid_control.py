@@ -22,14 +22,16 @@ from nav_msgs.msg import Odometry
 from kingfisher_msgs.msg import Drive
 from kingfisher_msgs.msg import Course
 from sensor_msgs.msg import Imu
+from std_srvs.srv import SetBool, SetBoolResponse, SetBoolRequest
 
 # BSB
 import pypid
 
 
 class Node():
-    def __init__(self):
+    def __init__(self,engaged=False):
         # Setup Yaw Pid
+        self.engaged = engaged
         self.ypid = pypid.Pid(0.0, 0.0, 0.0)
         self.ypid.set_setpoint(0.0)
         #self.pid.set_inputisangle(True,pi)
@@ -58,6 +60,18 @@ class Node():
 
         # Type of yaw control
         self.yaw_type = 'yaw'
+
+    def set_engaged_callback(self,req):
+        result = SetBoolResponse()
+        rospy.loginfo('Setting engaged to :')
+        rospy.loginfo(req.data)
+        self.engaged = req.data
+        # response
+        #req.success = True
+        #req.message = "done"
+        result.success = True
+        result.message = 'done'
+        return result
         
     def twist_callback(self,msg):
         self.ypid.set_setpoint(msg.angular.z)
@@ -107,7 +121,10 @@ class Node():
         #rospy.loginfo('Torque: %.3f, Thrust: %.3f'%(torque,thrust))
         self.drivemsg.left=-1*torque + thrust
         self.drivemsg.right=torque + thrust
-        self.publisher.publish(self.drivemsg)
+        
+        # Only publish if engaged
+        if (self.engaged):
+            self.publisher.publish(self.drivemsg)
 
         if not (self.ypubdebug is None):
             self.ydebugmsg.PID = yout[0]
@@ -170,6 +187,8 @@ if __name__ == '__main__':
     velKd = rospy.get_param('~velKd',0.0)
     velKi = rospy.get_param('~velKi',0.0)
 
+    engaged = rospy.get_param('~start_engaged',False)
+
     yaw_type = rospy.get_param('~yaw_type','yaw')  # 'yaw' or 'yaw_rate'
     rospy.loginfo('Setting control yaw_type to <%s>'%yaw_type)
     # validate
@@ -182,7 +201,7 @@ if __name__ == '__main__':
         
     
     # Initiate node object - creates PID object
-    node=Node()
+    node=Node(engaged)
     
     # Set initial gains from parameters
     node.ypid.Kp = yawKp
@@ -208,6 +227,9 @@ if __name__ == '__main__':
     node.vpubdebug = rospy.Publisher("vel_pid_debug",PidDiagnose,queue_size=10)
     node.ydebugmsg = PidDiagnose()
     node.vdebugmsg = PidDiagnose()
+
+    # Setup service
+    s = rospy.Service('set_engaged',SetBool,node.set_engaged_callback)
 
     # Setup subscribers
     s1 = rospy.Subscriber('odometry/nav',Odometry,node.odom_callback)
