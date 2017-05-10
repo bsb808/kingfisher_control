@@ -17,9 +17,9 @@ else
 fi
 
 #echo "Vel = ${dvel}, Yaw-rate = ${dyaw}"
-TOPIC="cli_cmd_vel"
+TOPIC="p5/my_p3at/cmd_vel"
 #TOPIC="nav_cmd_vel" # for testing
-cmd="rostopic pub -1 /${TOPIC} geometry_msgs/Twist  '{linear:  {x: ${dvel}, y: 0.0, z: 0.0}, angular: {x: 0.0,y: 0.0,z: ${dyaw}}}'"
+cmd="rostopic pub -r 10 /${TOPIC} geometry_msgs/Twist  '{linear:  {x: ${dvel}, y: 0.0, z: 0.0}, angular: {x: 0.0,y: 0.0,z: ${dyaw}}}'"
 
 echo ${cmd}
 
