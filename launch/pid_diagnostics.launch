@@ -2,10 +2,11 @@
 <launch>
 
 <!-- Joystick -->
-<node pkg="joy" type="joy_node" name="joy">
-  <param name="dev" value="/dev/input/js0"/>
   <!--<param name="autorepeat_rate" type="double" value="10.0" />  -->
-</node>
+<!--<node pkg="joy" type="joy_node" name="joy" output="screen">
+  <param name="dev" value="/dev/input/js0"/>
+
+</node>-->
 
 <!--
 <rosparam file="$(find kingfisher_control)/config/kingfisher_joy.yaml"
